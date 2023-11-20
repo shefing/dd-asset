@@ -52,6 +52,9 @@ const BasicLayout = () => {
 
   const onDrop = (layout1, layoutItem, _event) => {
     setLayout([...layout,layoutItem ]);
+
+
+    
     // alert(`Dropped element props:\n${JSON.stringify(layoutItem, ["x", "y", "w", "h"], 2)}`);
   };
 
