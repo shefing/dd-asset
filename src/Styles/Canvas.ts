@@ -7,7 +7,7 @@ export const StyledCanvas = styled.div`
   height: 24rem;
   overflow-x: scroll;
   overflow-y: scroll;
-  background-color: red
+  background-color: blue
 `;
 
 export const StyledSideStorage = styled.div`

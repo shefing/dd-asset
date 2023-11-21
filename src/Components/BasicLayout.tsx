@@ -1,24 +1,24 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import _ from "lodash";
-import RGL, { WidthProvider, Responsive } from "react-grid-layout";
-import { StyledCanvas } from "../Styles/Canvas";
+import { WidthProvider, Responsive, Layout } from "react-grid-layout";
+// import { StyledCanvas } from "../Styles/Canvas";
 
-const ReactGridLayout = WidthProvider(RGL);
+// const ReactGridLayout = WidthProvider(RGL);
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
-const BasicLayout = () => {
-  const props = {
+const BasicLayout: React.FC = () => {
+  const [items, setItems] = useState<number[]>([1, 2, 3, 4, 5]);
+
+  const props: any = {
     isDraggable: true,
     isResizable: true,
-    items: 5,
     rowHeight: 30,
-    onLayoutChange: function () {},
     cols: { lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 },
   };
 
-  const generateLayout = (p) => {
-    return _.map(new Array(p.items), (item, i) => {
-      const y = _.result(p, "y") || Math.ceil(Math.random() * 4) + 1;
+  const generateLayout = (p: any) => {
+    return _.map(items, (item, i) => {
+      const y: any = _.result(p, "y");
       return {
         x: (i * 2) % 12,
         y: Math.floor(i / 6) * y,
@@ -28,20 +28,19 @@ const BasicLayout = () => {
       };
     });
   };
+
   const [layout, setLayout] = useState(generateLayout(props));
 
-  const onLayoutChange = useCallback(
-    (newLayout: any) => {
-      setLayout(newLayout);
-      props.onLayoutChange(newLayout);
-    },
-    [props]
-  );
+  const onLayoutChange = (newLayout: Layout[]) => {
+    console.log("onLayoutChange", newLayout);
 
-  const generateDOM = () => {
-    return _.map(_.range(props.items), (i) => (
-      <div style={{ backgroundColor: "grey" }} key={i}>
-        <span className="text">{i}</span>
+    // setLayout(newLayout);
+  };
+
+  const generateDOM = (): React.ReactNode => {
+    return layout.map((item, i) => (
+      <div key={i} style={{ backgroundColor: "grey" }}>
+        <span className="text">{item.i}</span>
       </div>
     ));
   };
@@ -50,16 +49,13 @@ const BasicLayout = () => {
     console.log("layout", layout);
   }, [layout]);
 
-  const onDrop = (layout1, layoutItem, _event) => {
-    setLayout([...layout,layoutItem ]);
-
-
-    
-    // alert(`Dropped element props:\n${JSON.stringify(layoutItem, ["x", "y", "w", "h"], 2)}`);
+  const onDrop = (layout1: Layout[], layoutItem: Layout, _event: Event) => {
+    setLayout([...layout, layoutItem]);
+    setItems([...items, layoutItem.x]);
   };
 
   return (
-    <ResponsiveReactGridLayout onDrop={onDrop} isDroppable={true} layout={layout} {...props}>
+    <ResponsiveReactGridLayout onLayoutChange={onLayoutChange} onDrop={onDrop} isDroppable={true} layout={layout} {...props}>
       {generateDOM()}
     </ResponsiveReactGridLayout>
   );
